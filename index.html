@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>রঙীনবাড়ী স্যোшал মিডিয়া</title>
+    <style>
+        /* গ্লোবাল ডার্ক মিনিমালিজম */
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #08090d;
+            color: #ffffff;
+        }
+
+        /* ১. ব্যতিক্রমী থ্রেডস-স্টাইল গেটওয়ে স্ক্রীন */
+        #social-gateway {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #08090d;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 99999;
+            /* জুম-আউট ট্রানজিশন: ক্লিক করলে স্ক্রিনটি পেছনের দিকে মিলিয়ে যাবে */
+            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.6s ease;
+            padding: 20px 24px calc(24px + env(safe-area-inset-bottom)) 24px;
+        }
+
+        /* মিনিমাল টপ লোগো */
+        .top-brand {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 15px;
+        }
+
+        .brand-icon-logo {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00c3ff, #7f00ff, #ff007f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        /* সেন্ট্রাল ডাইনামিক স্লাইডার এরিয়া */
+        .slider-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* থ্রেড/পোস্ট বাবল */
+        .thread-bubble {
+            width: 100%;
+            max-width: 360px;
+            background: #12131a;
+            border: 1px solid #1e202c;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            position: relative;
+            transform: rotate(-1.5deg); /* একটু বাঁকানো ট্রেন্ডি লুক */
+            animation: floatBubble 4s ease-in-out infinite;
+        }
+
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0px) rotate(-1.5deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+        }
+
+        .thread-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .verified-badge {
+            width: 16px;
+            height: 16px;
+            background: #00c3ff;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 9px;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .thread-content {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+
+        .thread-actions {
+            display: flex;
+            gap: 18px;
+            margin-top: 15px;
+            color: #4a4d63;
+            font-size: 15px;
+        }
+
+        /* ২. বটম ইন্টারেক্টিভ জোন */
+        .bottom-control-zone {
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .promo-heading {
+            font-size: 14px;
+            color: #4a4d63;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* আল্ট্রা-ক্লিন পিওর হোয়াইট স্লিক বাটন */
+        .action-gate-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 30px;
+            background: #ffffff;
+            color: #000000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-gate-btn:active {
+            transform: scale(0.97);
+            background: #e2e8f0;
+        }
+
+        /* ৩. আইফ্রেম ও ব্যাকগ্রাউন্ড লেয়ার */
+        .app-view-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #main-app-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            overscroll-behavior: none;
+        }
+
+        /* এক্সিট অ্যানিমেশন (জুম-আউট ও ফেড-আউট মিক্সড) */
+        .gateway-fade-zoom {
+            transform: scale(1.15) !important;
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="social-gateway">
+        
+        <div class="top-brand">
+            <div class="brand-icon-logo">রঙীনবাড়ী</div>
+        </div>
+
+        <div class="slider-center">
+            <div class="thread-bubble">
+                <div class="thread-user">
+                    <div style="width: 36px; height: 36px; background: linear-gradient(45deg, #ff007f, #7f00ff); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px;">🏡</div>
+                    <div>
+                        <h5 style="font-size: 14px; font-weight: 700;">ronginbari <span class="verified-badge">✓</span></h5>
+                        <p style="font-size: 11px; color: #4a4d63;">স্পনসরড</p>
+                    </div>
+                </div>
+                <div class="thread-content">
+                    Everything You Need,<br>
+                    <span style="background: linear-gradient(45deg, #00c3ff, #ff007f); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">In One App.</span>
+                </div>
+                <div class="thread-actions">
+                    <span>♡</span>
+                    <span>💬</span>
+                    <span>⟲</span>
+                    <span>➔</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-control-zone">
+            <div class="promo-heading">বাঙালিদের নিজস্ব সামাজিক যোগাযোগ মাধ্যম</div>
+            <button class="action-gate-btn" id="gate-trigger" onclick="launchApp()">
+                <span>চলুন ভেতরে যাই</span>
+            </button>
+        </div>
+
+    </div>
+
+    <div class="app-view-layer">
+        <iframe 
+            id="main-app-frame" 
+            src="https://script.google.com/macros/s/AKfycbxyDgmkJwlYpFDTvi0bE3cHodBf7p-pnqzo27yNCyyQVsdsqqKZo31nxZHxYBueOXc/exec" 
+            allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; autofocus; autoplay; clipboard-write; clipboard-read;"
+            sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+        </iframe>
+    </div>
+
+    <script>
+        const appFrame = document.getElementById('main-app-frame');
+        const gatewayScreen = document.getElementById('social-gateway');
+        const gateBtn = document.getElementById('gate-trigger');
+
+        function launchApp() {
+            // বোতামের ইন্টারেক্টিভ স্টেট চ্যাঞ্জ
+            gateBtn.innerHTML = "<span style='color: #64748b;'>প্রবেশ করা হচ্ছে...</span>";
+            gateBtn.style.background = "#12131a";
+            gateBtn.style.border = "1px solid #1e202c";
+
+            // জুম এবং স্কেল অ্যানিমেশনে গেটওয়ে পেজটি বিদায় নেবে
+            setTimeout(() => {
+                gatewayScreen.classList.add('gateway-fade-zoom');
+            }, 500);
+        }
+    </script>
+
+</body>
+</html>
